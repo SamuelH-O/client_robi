@@ -38,7 +38,7 @@
      
 	        <AnchorPane GridPane.columnIndex="0" GridPane.rowIndex="2">
 				<Label text="Trace d'exécution" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="0.0"/>
-	            <TextArea fx:id="traceTextArea" prefHeight="200.0" prefWidth="600.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0"
+	            <TextArea fx:id="traceTextArea" editable="false" prefHeight="200.0" prefWidth="600.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0"
 	                      AnchorPane.topAnchor="20.0"/>
 	        </AnchorPane>
 
