@@ -13,7 +13,7 @@
             <Menu text="Fichier">
                 <MenuItem text="Ouvrir" onAction="#openFile"/>
                 <MenuItem text="Sauver" onAction="#saveFile"/>
-                <MenuItem text="Fermer"/>
+                <MenuItem text="Fermer" onAction="#exit"/>
             </Menu>
         </MenuBar>
     </top>
@@ -21,22 +21,31 @@
  		<GridPane alignment="center" hgap="10" vgap="10"
     	styleClass="root">
     	<padding><Insets top="25" right="25" bottom="25" left="25"/></padding>
- 	       <AnchorPane GridPane.columnIndex="0" GridPane.rowIndex="0">
-	            <TextArea fx:id="textArea1" prefHeight="200.0" prefWidth="600.0" text="Programme ROBI"
-	                      AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0"
-	                      AnchorPane.topAnchor="5.0"/>
+			<AnchorPane GridPane.columnIndex="0" GridPane.rowIndex="0">
+				<Label text="Ip:" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="0.0"/>
+				<TextArea fx:id="ipTextArea" text="127.0.0.1" prefHeight="10.0" prefWidth="500.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="115.0"
+						  AnchorPane.topAnchor="20.0"/>
+				<Label text="Port:" AnchorPane.leftAnchor="515.0" AnchorPane.topAnchor="0.0"/>
+				<TextArea fx:id="portTextArea" text="8000" prefHeight="10.0" prefWidth="100.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="515.0" AnchorPane.rightAnchor="5.0"
+						  AnchorPane.topAnchor="20.0"/>
+			</AnchorPane>
+
+ 	       <AnchorPane GridPane.columnIndex="0" GridPane.rowIndex="1">
+			   <Label text="Programme ROBI:" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="0.0"/>
+			   <TextArea fx:id="commandTextArea" prefHeight="200.0" prefWidth="600.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0"
+	                      AnchorPane.topAnchor="20.0"/>
 	        </AnchorPane>
      
-	        <AnchorPane GridPane.columnIndex="0" GridPane.rowIndex="1">
-	            <TextArea fx:id="textArea2" prefHeight="200.0" prefWidth="600.0" text="Trace d'éxécution"
-	                      AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0"
-	                      AnchorPane.topAnchor="5.0"/>
+	        <AnchorPane GridPane.columnIndex="0" GridPane.rowIndex="2">
+				<Label text="Trace d'exécution" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="0.0"/>
+	            <TextArea fx:id="traceTextArea" prefHeight="200.0" prefWidth="600.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0"
+	                      AnchorPane.topAnchor="20.0"/>
 	        </AnchorPane>
-	        
-	        <AnchorPane GridPane.columnIndex="0" GridPane.rowIndex="2" >
-  				<children>
-   					<Button fx:id="b1" onAction="#b1_exec" layoutX="14.0" layoutY="14.0" text="Exécuter programme ROBI" />
-   				</children>
+
+			<AnchorPane GridPane.columnIndex="0" GridPane.rowIndex="3">
+				<Button fx:id="execButton" onAction="#execButton_exec" layoutX="5.0" layoutY="5.0"
+						text="Exécuter programme ROBI"/>
+				<Label fx:id="errorLabel" textFill="red" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0"/>
 			</AnchorPane>
 	        
         </GridPane>
