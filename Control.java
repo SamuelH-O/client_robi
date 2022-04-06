@@ -5,6 +5,7 @@ import static java.util.logging.Level.SEVERE;
 import java.io.*;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.Arrays;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -49,6 +50,12 @@ public class Control {
 				writer.println("Connected ?");
 				if (reader.readLine().equals("Connected !")) {
 					writer.println(Message.toJson(command));
+					/*char[] traceCharArr = new char[254];
+					StringBuilder traceStrBuilder = new StringBuilder();
+					while((reader.read(traceCharArr)) != -1) {
+						traceStrBuilder.append(traceCharArr);
+					}
+					trace = Message.fromJson(traceStrBuilder.toString());*/
 					trace = Message.fromJson(reader.readLine());
 					traceTextArea.setText(trace.getMess());
 				} else {
@@ -68,6 +75,7 @@ public class Control {
 		}
 		System.out.println("execButton_exec");
     	System.out.println("commandTextArea = "+commandTextArea.getText());
+		System.out.println("traceTextArea = "+traceTextArea.getText());
     }
     
     public void openFile(ActionEvent event) {

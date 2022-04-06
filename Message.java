@@ -23,7 +23,6 @@ public class Message {
         }
        
         public static Message fromJson(String s) {
-               
                 try {
                         String re1 = "type\":\"";
                         int pos1 = s.indexOf(re1);
