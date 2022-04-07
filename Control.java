@@ -18,11 +18,12 @@ public class Control {
 	public TextArea ipTextArea;
 	public TextArea portTextArea;
 	public Label errorLabel;
+	public Button stopButton;
 	private File fic;
-
     public Button execButton;
     public TextArea commandTextArea;
     public TextArea traceTextArea;
+	Socket clientSocket = null;
     
     public void initialize() {
     }
@@ -30,8 +31,8 @@ public class Control {
     public void execButton_exec(ActionEvent event) {
 		String ip;
 		Message command;
-		Message trace;
 		int port;
+
 		if (portTextArea.getText().isEmpty()) {
 			errorLabel.setText("Erreur : pas de port");
 		} else if (ipTextArea.getText().isEmpty()) {
@@ -40,31 +41,40 @@ public class Control {
 			errorLabel.setText("Erreur : pas de commande");
 		}else {
 			errorLabel.setText("");
+			traceTextArea.setText("");
 			ip = ipTextArea.getText();
 			port = Integer.parseInt(portTextArea.getText());
-			command = new Message("t",commandTextArea.getText());
+			command = new Message("command",commandTextArea.getText());
 			try {
-				Socket clientSocket = new Socket(ip, port);
+				clientSocket = new Socket(ip, port);
 				PrintWriter writer = new PrintWriter(clientSocket.getOutputStream(), true);
 				BufferedReader reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-				writer.println("Connected ?");
-				if (reader.readLine().equals("Connected !")) {
-					writer.println(Message.toJson(command));
-					/*char[] traceCharArr = new char[254];
-					StringBuilder traceStrBuilder = new StringBuilder();
-					while((reader.read(traceCharArr)) != -1) {
-						traceStrBuilder.append(traceCharArr);
+
+				final Message handshakeGreet = new Message("handshake", "Connected ?");
+				final Message handshakeResponse = new Message("handshake", "Connected !");
+				writer.println(Message.toJson(handshakeGreet));
+				if (reader.readLine().equals(Message.toJson(handshakeResponse))) {
+					System.out.println("Handshake successfully executed");
+
+					try {
+						Thread.sleep(100);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
 					}
-					trace = Message.fromJson(traceStrBuilder.toString());*/
-					trace = Message.fromJson(reader.readLine());
-					traceTextArea.setText(trace.getMess());
+
+					writer.println(Message.toJson(command));
+					System.out.print(Message.toJson(command));
+					stopButton.setDisable(false);
+
+					Thread readerThread = new traceReader(writer, reader);
+					readerThread.start();
 				} else {
 					traceTextArea.setText("Erreur : échec connection");
+					writer.close();
+					reader.close();
+					clientSocket.close();
 					System.out.println("Erreur : échec connection");
 				}
-				writer.close();
-				reader.close();
-				clientSocket.close();
 			} catch (UnknownHostException e) {
 				errorLabel.setText("Erreur : UnknownHostException");
 				e.printStackTrace();
@@ -73,10 +83,55 @@ public class Control {
 				e.printStackTrace();
 			}
 		}
-		System.out.println("execButton_exec");
-    	System.out.println("commandTextArea = "+commandTextArea.getText());
-		System.out.println("traceTextArea = "+traceTextArea.getText());
+		//System.out.println("execButton_exec");
+    	//System.out.println("commandTextArea :\n" + commandTextArea.getText() + '\n');
+		//System.out.println("traceTextArea :\n"+traceTextArea.getText() + '\n');
     }
+
+	public class traceReader extends Thread{
+		BufferedReader reader;
+		PrintWriter writer;
+
+		public traceReader(PrintWriter writer, BufferedReader reader) {
+			this.reader = reader;
+			this.writer = writer;
+		}
+
+		@Override
+		public void run() {
+			Message traceLine;
+			while (true) {
+				try {
+					traceLine = Message.fromJson(reader.readLine());
+					System.out.println(Message.toJson(traceLine));
+					if (traceLine.getType().equals("trace")) {
+						traceTextArea.setText(traceTextArea.getText() + traceLine.getMess());
+					} else if (traceLine.getType().equals("commandDone")) {
+						traceTextArea.setText(traceTextArea.getText() + traceLine.getMess());
+						stopButton.setDisable(true);
+						writer.close();
+						reader.close();
+						clientSocket.close();
+						return;
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
+					System.exit(-1);
+				}
+			}
+		}
+	}
+
+	public void stopButton_exec(ActionEvent actionEvent) {
+		if (!clientSocket.isClosed()) {
+			try {
+				PrintWriter writer = new PrintWriter(clientSocket.getOutputStream(), true);
+				writer.print(Message.toJson(new Message("stopCommand", "")));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
     
     public void openFile(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();

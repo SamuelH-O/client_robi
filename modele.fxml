@@ -47,6 +47,10 @@
 						text="Exécuter programme ROBI"/>
 				<Label fx:id="errorLabel" textFill="red" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0"/>
 			</AnchorPane>
+
+			<AnchorPane GridPane.columnIndex="0" GridPane.rowIndex="4">
+				<Button fx:id="stopButton" onAction="#stopButton_exec" disable="true" layoutX="5.0" layoutY="5.0" text="Arrêt du programme en cours" />
+			</AnchorPane>
 	        
         </GridPane>
     </center>
