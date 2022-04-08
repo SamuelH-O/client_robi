@@ -63,6 +63,7 @@ public class Control {
 
 					Thread traceReaderThread = new traceReader(writer, reader);
 					traceReaderThread.start();
+					commandTextArea.setText("");
 				} else {
 					traceTextArea.setText("Erreur : échec connection");
 					writer.close();
