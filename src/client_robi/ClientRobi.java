@@ -12,7 +12,6 @@ public class ClientRobi extends Application {
     public void start(Stage primaryStage) throws Exception {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("modele.fxml"));
         Parent root = loader.load();
-        //primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("img/EdenCodingIcon.png")));
         primaryStage.setTitle("Client Robi");
         primaryStage.setScene(new Scene(root));
         primaryStage.show();

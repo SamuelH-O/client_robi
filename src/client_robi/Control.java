@@ -42,9 +42,11 @@ public class Control {
 		}else {
 			errorLabel.setText("");
 			traceTextArea.setText("");
+
 			ip = ipTextArea.getText();
 			port = Integer.parseInt(portTextArea.getText());
 			command = new Message("command",commandTextArea.getText());
+
 			try {
 				clientSocket = new Socket(ip, port);
 				PrintWriter writer = new PrintWriter(clientSocket.getOutputStream(), true);
@@ -56,24 +58,16 @@ public class Control {
 				if (reader.readLine().equals(Message.toJson(handshakeResponse))) {
 					System.out.println("Handshake successfully executed");
 
-					try {
-						Thread.sleep(100);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-
 					writer.println(Message.toJson(command));
-					System.out.println(Message.toJson(command));
 					stopButton.setDisable(false);
 
-					Thread readerThread = new traceReader(writer, reader);
-					readerThread.start();
+					Thread traceReaderThread = new traceReader(writer, reader);
+					traceReaderThread.start();
 				} else {
 					traceTextArea.setText("Erreur : échec connection");
 					writer.close();
 					reader.close();
 					clientSocket.close();
-					System.out.println("Erreur : échec connection");
 				}
 			} catch (UnknownHostException e) {
 				errorLabel.setText("Erreur : UnknownHostException");
@@ -83,9 +77,6 @@ public class Control {
 				e.printStackTrace();
 			}
 		}
-		//System.out.println("execButton_exec");
-    	//System.out.println("commandTextArea :\n" + commandTextArea.getText() + '\n');
-		//System.out.println("traceTextArea :\n"+traceTextArea.getText() + '\n');
     }
 
 	public class traceReader extends Thread{
