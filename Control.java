@@ -63,7 +63,7 @@ public class Control {
 					}
 
 					writer.println(Message.toJson(command));
-					System.out.print(Message.toJson(command));
+					System.out.println(Message.toJson(command));
 					stopButton.setDisable(false);
 
 					Thread readerThread = new traceReader(writer, reader);
@@ -102,17 +102,27 @@ public class Control {
 			Message traceLine;
 			while (true) {
 				try {
-					traceLine = Message.fromJson(reader.readLine());
-					System.out.println(Message.toJson(traceLine));
-					if (traceLine.getType().equals("trace")) {
-						traceTextArea.setText(traceTextArea.getText() + traceLine.getMess());
-					} else if (traceLine.getType().equals("commandDone")) {
-						traceTextArea.setText(traceTextArea.getText() + traceLine.getMess());
-						stopButton.setDisable(true);
-						writer.close();
-						reader.close();
-						clientSocket.close();
-						return;
+					String line;
+					StringBuilder traceStringBuilder = new StringBuilder();
+					while ((line = reader.readLine()) != null) {
+						if (line.endsWith("}")) {
+							traceStringBuilder.append(line);
+							traceLine = Message.fromJson(traceStringBuilder.toString());
+							System.out.println(Message.toJson(traceLine));
+							if (traceLine.getType().equals("trace")) {
+								traceTextArea.setText(traceTextArea.getText() + traceLine.getMess());
+							} else if (traceLine.getType().equals("commandDone")) {
+								traceTextArea.setText(traceTextArea.getText() + traceLine.getMess());
+								stopButton.setDisable(true);
+								writer.close();
+								reader.close();
+								clientSocket.close();
+								return;
+							}
+							traceStringBuilder = new StringBuilder();
+						} else {
+							traceStringBuilder.append(line).append("\n");
+						}
 					}
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -126,7 +136,8 @@ public class Control {
 		if (!clientSocket.isClosed()) {
 			try {
 				PrintWriter writer = new PrintWriter(clientSocket.getOutputStream(), true);
-				writer.print(Message.toJson(new Message("stopCommand", "")));
+				writer.println(Message.toJson(new Message("stopCommand", "")));
+				System.out.println(Message.toJson(new Message("stopCommand", "")));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
