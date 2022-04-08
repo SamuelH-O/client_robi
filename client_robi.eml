@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<component inherit-compiler-output="true" inheritJdk="true">
+<component inherit-compiler-output="true" jdk="17" jdk_type="JavaSDK">
 	<exclude-output/>
-	<contentEntry url="file://$MODULE_DIR$">
-		<packagePrefix url="file://$MODULE_DIR$" value="client_robi"/>
-	</contentEntry>
+	<contentEntry url="file://$MODULE_DIR$"/>
 	<levels>
 		<level name="lib" value="project"/>
 	</levels>
